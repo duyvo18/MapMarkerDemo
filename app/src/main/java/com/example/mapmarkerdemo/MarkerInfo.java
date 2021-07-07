@@ -2,13 +2,13 @@ package com.example.mapmarkerdemo;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class Marker {
+public class MarkerInfo {
     LatLng coord;
     String title;
     String info;
     String url;
 
-    public Marker(double lat, double lon, String title, String info, String url) {
+    public MarkerInfo(double lat, double lon, String title, String info, String url) {
         coord = new LatLng(lat, lon);
         this.title = title;
         this.info = info;

@@ -3,7 +3,6 @@ package com.example.mapmarkerdemo;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -12,18 +11,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
-    List<Marker> markers = List.of
+    List<MarkerInfo> markerInfoList = List.of
             (
                     new Marker(10.762913,106.6821717,
                             "VNUHCM - University of Science",
@@ -141,14 +138,15 @@ public class MapsActivity extends FragmentActivity implements
         mapFragment.getMapAsync(this);
 
         Toast.makeText(this,
-                "Click marker to view info\nClick pop-up window to access website", Toast.LENGTH_LONG).show();
+                "Click marker to view info\nClick pop-up window to access website",
+                Toast.LENGTH_LONG).show();
     }
 
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * This is where we can add markerInfoList or lines, add listeners or move the camera.
+     * In this case, we just add a marker near Sydney, Australia.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -158,29 +156,29 @@ public class MapsActivity extends FragmentActivity implements
         mMap = googleMap;
 
         mMap.setOnInfoWindowClickListener(this);
-        AddMarkers(markers);
+        AddMarkers(markerInfoList);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getCoord(), 10));
 
     }
 
-    private void AddMarkers(List<Marker> markers) {
-        for (Marker marker : markers) {
-            mMap.addMarker(new MarkerOptions()
-                    .position(marker.getCoord())
-                    .title(marker.getTitle())
-                    .snippet(marker.getInfo()));
+    private void AddMarkers(List<MarkerInfo> markerInfoList) {
+        for (MarkerInfo markerInfo : markerInfoList) {
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(markerInfo.getCoord())
+                    .title(markerInfo.getTitle())
+                    .snippet(markerInfo.getInfo()));
         }
     }
 
     @Override
     public void onInfoWindowClick(com.google.android.gms.maps.model.Marker marker) {
 
-        for (Marker defMarker : markers) {
-            if (marker.getTitle().equalsIgnoreCase(defMarker.getTitle())) {
+        for (MarkerInfo markerInfo : markerInfoList) {
+            if (marker.getTitle().equalsIgnoreCase(markerInfo.getTitle())) {
                 Toast.makeText(this,
                         "Opening in browser...", Toast.LENGTH_SHORT).show();
-                OpenBrowserToUrl(defMarker.getUrl());
+                OpenBrowserToUrl(markerInfo.getUrl());
                 return;
             }
         }
