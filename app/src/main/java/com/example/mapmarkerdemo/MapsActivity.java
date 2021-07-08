@@ -1,8 +1,13 @@
 package com.example.mapmarkerdemo;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -10,12 +15,17 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 
@@ -23,7 +33,11 @@ public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
+    Location currentLoc;
     List<UniInfo> uniInfoList;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    private static final int request_code = 101;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +51,28 @@ public class MapsActivity extends FragmentActivity implements
         Toast.makeText(this,
                 "Click marker to view info\nClick pop-up window to access website",
                 Toast.LENGTH_LONG).show();
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        fetchLastLocation();
+    }
+
+    private void fetchLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, request_code);
+            return;
+        }
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+               if (location != null) {
+                   currentLoc = location;
+                   Toast.makeText(getApplicationContext(),currentLoc.getLatitude()+""+currentLoc.getLongitude(),Toast.LENGTH_SHORT).show();
+                   SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                   supportMapFragment.getMapAsync(MapsActivity.this);
+               }
+            }
+        });
     }
 
     @Override
@@ -70,12 +106,22 @@ public class MapsActivity extends FragmentActivity implements
                 // TODO: find uni location
                 break;
             case R.id.Btn_findCurrentLoc:
-                // TODO: find current location
+                findCurrentLocation();
                 break;
             case R.id.Btn_navigateToUni:
                 // TODO: navigate to uni
                 break;
         }
+    }
+
+    private void findCurrentLocation() {
+        LatLng latLng = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(latLng)
+                .title("Current Location");
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+        mMap.addMarker(markerOptions);
     }
 
     private void AddMarkers(List<UniInfo> uniInfoList) {
@@ -84,6 +130,17 @@ public class MapsActivity extends FragmentActivity implements
                     .position(uniInfo.getCoord())
                     .title(uniInfo.getTitle())
                     .snippet(uniInfo.getInfo()));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case request_code:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    fetchLastLocation();
+                break;
         }
     }
 
