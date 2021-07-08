@@ -39,6 +39,7 @@ public class MapsActivity extends FragmentActivity implements
     private static final int request_code = 101;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onCLickButton(View view) {
         switch (view.getId()) {
             case R.id.Btn_findUni:
-                // TODO: find uni location
+                findUniLocation();
                 break;
             case R.id.Btn_findCurrentLoc:
                 findCurrentLocation();
