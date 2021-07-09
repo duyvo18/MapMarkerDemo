@@ -7,6 +7,9 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,12 +24,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements
@@ -37,8 +43,6 @@ public class MapsActivity extends FragmentActivity implements
     List<UniInfo> uniInfoList;
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int request_code = 101;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,25 +59,6 @@ public class MapsActivity extends FragmentActivity implements
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
-    }
-
-    private void fetchLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, request_code);
-            return;
-        }
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-               if (location != null) {
-                   currentLoc = location;
-                   Toast.makeText(getApplicationContext(),currentLoc.getLatitude()+""+currentLoc.getLongitude(),Toast.LENGTH_SHORT).show();
-                   SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                   supportMapFragment.getMapAsync(MapsActivity.this);
-               }
-            }
-        });
     }
 
     @Override
@@ -97,7 +82,25 @@ public class MapsActivity extends FragmentActivity implements
             }
         }
         Toast.makeText(this,
-                "Can not find info for this marker", Toast.LENGTH_SHORT).show();
+                "Error: cannot find info", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case request_code:
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    fetchLastLocation();
+                break;
+            default:
+                Toast.makeText(this,
+                        "Error: cannot find request code " + requestCode,
+                        Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 
     // TODO: implement onClickButton
@@ -115,8 +118,37 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
+    private void fetchLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, request_code);
+            return;
+        }
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    currentLoc = location;
+                    Toast.makeText(getApplicationContext(),
+                            currentLoc.getLatitude()+", "+currentLoc.getLongitude(),
+                            Toast.LENGTH_SHORT).show();
+                    SupportMapFragment supportMapFragment =
+                            (SupportMapFragment) getSupportFragmentManager()
+                                    .findFragmentById(R.id.map);
+                    supportMapFragment.getMapAsync(MapsActivity.this);
+                }
+            }
+        });
+    }
+
     private void findUniLocation() {
-        AutoCompleteTextView source = (AutoCompleteTextView) findViewById(R.id.Menu_dropdown_textview);
+        AutoCompleteTextView source =
+                (AutoCompleteTextView) findViewById(R.id.Menu_dropdown_textview);
         String Source = source.getText().toString();
         for (UniInfo uniInfo : uniInfoList) {
             if (Source.equalsIgnoreCase(uniInfo.getTitle())) {
@@ -126,44 +158,18 @@ public class MapsActivity extends FragmentActivity implements
                 return;
             }
         }
+        Toast.makeText(this,"University not found", Toast.LENGTH_SHORT).show();
     }
 
     private void findCurrentLocation() {
         LatLng latLng = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
-                .title("Current Location");
+                .title("Current Location")
+                .icon(DrawableToBitmapDescriptor(R.drawable.current_location));
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
         mMap.addMarker(markerOptions);
-    }
-
-    private void AddMarkers(List<UniInfo> uniInfoList) {
-        for (UniInfo uniInfo : uniInfoList) {
-            Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(uniInfo.getCoord())
-                    .title(uniInfo.getTitle())
-                    .snippet(uniInfo.getInfo()));
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case request_code:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    fetchLastLocation();
-                break;
-        }
-    }
-
-    private void OpenBrowserToUrl(String url) {
-        Uri webpage = Uri.parse(url);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
     }
 
     private void AddUniInfo() {
@@ -272,7 +278,12 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     private void PrepareDropdownMenu() {
-        String[] stringArray = getResources().getStringArray(R.array.uni_name);
+        ArrayList<String> uniNameArrayList = new ArrayList<>();
+        for (UniInfo uniInfo : uniInfoList) {
+            uniNameArrayList.add(uniInfo.getTitle());
+        }
+
+        String[] stringArray = uniNameArrayList.toArray(new String[0]);
         ArrayAdapter<String> stringArrayAdapter =
                 new ArrayAdapter<>(this, R.layout.menu_dropdown, stringArray);
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.Menu_dropdown_textview);
@@ -286,4 +297,32 @@ public class MapsActivity extends FragmentActivity implements
         mapFragment.getMapAsync(this);
     }
 
+    private void AddMarkers(List<UniInfo> uniInfoList) {
+        for (UniInfo uniInfo : uniInfoList) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(uniInfo.getCoord())
+                    .title(uniInfo.getTitle())
+                    .snippet(uniInfo.getInfo()));
+        }
+    }
+
+    private void OpenBrowserToUrl(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    private BitmapDescriptor DrawableToBitmapDescriptor(int drawableID) {
+        Drawable drawable = getResources().getDrawable(drawableID);
+        int height = drawable.getIntrinsicHeight();
+        int width = drawable.getIntrinsicWidth();
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0,0, width, height);
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
 }
