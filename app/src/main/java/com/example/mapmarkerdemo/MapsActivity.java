@@ -115,6 +115,19 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
+    private void findUniLocation() {
+        AutoCompleteTextView source = (AutoCompleteTextView) findViewById(R.id.Menu_dropdown_textview);
+        String Source = source.getText().toString();
+        for (UniInfo uniInfo : uniInfoList) {
+            if (Source.equalsIgnoreCase(uniInfo.getTitle())) {
+                LatLng latLng = uniInfo.getCoord();
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+                return;
+            }
+        }
+    }
+
     private void findCurrentLocation() {
         LatLng latLng = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions()
