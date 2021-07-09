@@ -119,11 +119,13 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     private void fetchLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                    PackageManager.PERMISSION_GRANTED
+                &&
+                ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, request_code);
             return;
@@ -134,9 +136,6 @@ public class MapsActivity extends FragmentActivity implements
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLoc = location;
-                    Toast.makeText(getApplicationContext(),
-                            currentLoc.getLatitude()+", "+currentLoc.getLongitude(),
-                            Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment =
                             (SupportMapFragment) getSupportFragmentManager()
                                     .findFragmentById(R.id.map);
@@ -183,7 +182,7 @@ public class MapsActivity extends FragmentActivity implements
                         "235 Nguyen Van Cu, District 5, HCMC",
                         "http://www.thpt-lehongphong-tphcm.edu.vn/"),
                 new UniInfo(10.7613832, 106.6821711,
-                        "Ho Chi Minh University of Education",
+                        "HCMC University of Education",
                         "280 An Duong Vuong, District 5, HCMC",
                         "https://hcmue.edu.vn/vi/"),
                 new UniInfo(10.7599171, 106.6822583,
@@ -219,39 +218,39 @@ public class MapsActivity extends FragmentActivity implements
                         "104 Nguyen Van Troi, Phu Nhuan District, HCMC",
                         "https://vaa.edu.vn/"),
                 new UniInfo(10.8223018, 106.6852621,
-                        "Industrial University of Ho Chi Minh City",
+                        "Industrial University of HCMC",
                         "12 Nguyen Van Bao, Go Vap District, HCMC",
                         "http://www.iuh.edu.vn/"),
                 new UniInfo(10.8065201, 106.626668,
-                        "Ho Chi Minh City University of Food Industry",
+                        "HCMC University of Food Industry",
                         "140 Le Trong Tan, Tan Phu District, HCMC",
                         "https://ts.hufi.edu.vn/"),
                 new UniInfo(10.8652492, 106.6166996,
-                        "Ho Chi Minh City University of Transport",
+                        "HCMC University of Transport",
                         "70 To Ky, Tan Chanh Hiep, District 12, HCMC",
                         "http://ut.edu.vn/"),
                 new UniInfo(10.7823585, 106.6919285,
-                        "Ho Chi Minh City Architecture University",
+                        "HCMC University of Architecture",
                         "196 Pasteur, District 3, HCMC",
                         "http://www.uah.edu.vn/"),
                 new UniInfo(10.7731605, 106.6754147,
-                        "University Of Economics Ho Chi Minh City",
+                        "HCMC University Of Economics",
                         "91C 3/2 Street, District 10, HCMC",
                         "http://www.ueh.edu.vn/"),
                 new UniInfo(10.7675602, 106.7033313,
-                        "Ho Chi Minh City University of Law",
+                        "HCMC University of Law",
                         "2 Nguyen Tat Thanh, District 4, HCMC",
                         "http://www.hcmulaw.edu.vn/"),
                 new UniInfo(10.7649115, 106.698634,
-                        "Ho Chi Minh City Open University",
+                        "HCMC Open University",
                         "97 Vo Van Tan, District 3, HCMC",
                         "http://www.ou.edu.vn/"),
                 new UniInfo(10.8024548, 106.6932305,
-                        "Ho Chi Minh City Fine Arts University",
+                        "HCMC University of Fine Arts",
                         "5 Phan Dang Luu, Binh Thanh District, HCMC",
                         "http://www.hcmufa.edu.vn/"),
                 new UniInfo(10.7648853, 106.7052001,
-                        "Ho Chi Minh City Banking University",
+                        "HCMC Banking University",
                         "35 Nguyen Tat Thanh, District 4, HCMC",
                         "https://buh.edu.vn/"),
                 new UniInfo(10.8069083, 106.7108633,
@@ -259,11 +258,11 @@ public class MapsActivity extends FragmentActivity implements
                         "15 D5 Street, Binh Thanh District, HCMC",
                         "http://cs2.ftu.edu.vn/"),
                 new UniInfo(10.867906, 106.7856724,
-                        "Ho Chi Minh City University of Agriculture and Forestry",
+                        "HCMC University of Agriculture and Forestry",
                         "6 1A Route, Di An, Binh Duong Province",
                         "https://www.hcmuaf.edu.vn/"),
                 new UniInfo(110.8507267, 106.7697336,
-                        "Ho Chi Minh City University of Technology and Education",
+                        "HCMC University of Technology and Education",
                         "1 Vo Van Ngan, Thu Duc City, HCMC",
                         "http://hcmute.edu.vn/"),
                 new UniInfo(10.7320073, 106.6968373,
@@ -271,7 +270,7 @@ public class MapsActivity extends FragmentActivity implements
                         "19 Nguyen Huu Tho, District 7, HCMC",
                         "https://www.tdtu.edu.vn/"),
                 new UniInfo(10.7627221, 106.6910583,
-                        "Van Lang University",
+                        "Van Lang University, Campus 1",
                         "45 Nguyen Khac Nhu, District 1, HCMC",
                         "https://www.vanlanguni.edu.vn/")
         );
