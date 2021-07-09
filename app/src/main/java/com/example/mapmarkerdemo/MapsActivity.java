@@ -119,11 +119,13 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     private void fetchLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                    PackageManager.PERMISSION_GRANTED
+                &&
+                ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, request_code);
             return;
@@ -134,9 +136,6 @@ public class MapsActivity extends FragmentActivity implements
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLoc = location;
-                    Toast.makeText(getApplicationContext(),
-                            currentLoc.getLatitude()+", "+currentLoc.getLongitude(),
-                            Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment =
                             (SupportMapFragment) getSupportFragmentManager()
                                     .findFragmentById(R.id.map);
