@@ -33,8 +33,7 @@
                 android:id="@+id/Menu_dropdown_textview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:editable="false"
-                android:inputType="none"
+                android:inputType="textAutoComplete"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:padding="10dp"/>
