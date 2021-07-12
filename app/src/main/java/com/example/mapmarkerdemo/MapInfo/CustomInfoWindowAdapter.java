@@ -30,6 +30,10 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         UniInfo uniInfo = (UniInfo)marker.getTag();
 
+        if (uniInfo == null) {
+            return null;
+        }
+
         ImageView imageView = (ImageView)contentView.findViewById(R.id.logo);
         imageView.setImageDrawable(context.getResources().getDrawable(uniInfo.getLogo()));
 
