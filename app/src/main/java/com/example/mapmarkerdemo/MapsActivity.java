@@ -81,6 +81,11 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onInfoWindowClick(com.google.android.gms.maps.model.Marker marker) {
         UniInfo uniInfo = (UniInfo) marker.getTag();
+
+        if (uniInfo == null) {
+            return;
+        }
+
         Toast.makeText(this,
                 "Opening in browser...", Toast.LENGTH_SHORT).show();
         OpenBrowserToUrl(uniInfo.getUrl());
