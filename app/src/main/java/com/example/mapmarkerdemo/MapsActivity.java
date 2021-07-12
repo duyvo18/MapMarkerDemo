@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
-
+import android.content.ActivityNotFoundException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -113,8 +113,35 @@ public class MapsActivity extends FragmentActivity implements
                 findCurrentLocation();
                 break;
             case R.id.Btn_navigateToUni:
-                // TODO: navigate to uni
+               navigation();
                 break;
+        }
+    }
+
+    private void navigation() {
+        AutoCompleteTextView source =
+                (AutoCompleteTextView) findViewById(R.id.Menu_dropdown_textview);
+        LatLng latLng = null;
+        String Source = source.getText().toString();
+        for (UniInfo uniInfo : uniInfoList) {
+            if (Source.equalsIgnoreCase(uniInfo.getTitle())) {
+                latLng = uniInfo.getCoord();
+                break;
+            }
+        }
+        try {
+            Uri uri = Uri.parse("https://www.google.co.in/maps/dir/"
+                    + currentLoc.getLatitude() + "," + currentLoc.getLongitude() + "/" + latLng.latitude + "," + latLng.longitude);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.setPackage("com.google.android.apps.maps");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        catch (ActivityNotFoundException e){
+            Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 
