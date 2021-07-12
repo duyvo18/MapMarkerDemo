@@ -129,20 +129,25 @@ public class MapsActivity extends FragmentActivity implements
                 break;
             }
         }
+
+        if (latLng == null){
+            Toast.makeText(this,"Please choose the destination university.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         try {
-            if (latLng == null){
-                Toast.makeText(this,"Pick the university first!", Toast.LENGTH_SHORT).show();
-                return;
-            }
             Uri uri = Uri.parse("https://www.google.co.in/maps/dir/"
-                    + currentLoc.getLatitude() + "," + currentLoc.getLongitude() + "/" + latLng.latitude + "," + latLng.longitude);
+                    + currentLoc.getLatitude() + "," + currentLoc.getLongitude() + "/" +
+                    latLng.latitude + "," + latLng.longitude);
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             intent.setPackage("com.google.android.apps.maps");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
         catch (ActivityNotFoundException e){
-            Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
+            Uri uri = Uri.parse
+                    ("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
