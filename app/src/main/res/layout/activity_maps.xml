@@ -10,31 +10,33 @@
         android:id="@+id/top_row"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        map:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="3dp"
         map:layout_constraintBottom_toTopOf="@id/map"
         map:layout_constraintLeft_toLeftOf="parent"
         map:layout_constraintRight_toRightOf="parent"
-        map:layout_constraintVertical_weight="1"
-        android:layout_margin="3dp">
+        map:layout_constraintTop_toTopOf="parent"
+        map:layout_constraintVertical_weight="1">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/Menu_dropdown"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            map:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="5dp"
             map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintHorizontal_weight="6"
             map:layout_constraintLeft_toLeftOf="parent"
             map:layout_constraintRight_toLeftOf="@id/Btn_findUni"
-            map:layout_constraintHorizontal_weight="6">
+            map:layout_constraintTop_toTopOf="parent">
 
             <AutoCompleteTextView
                 android:id="@+id/Menu_dropdown_textview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:singleLine="true"
+                android:editable="false"
+                android:inputType="none"
                 android:scrollHorizontally="true"
-                android:inputType="textAutoCorrect"/>
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -42,14 +44,15 @@
             android:id="@+id/Btn_findUni"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            map:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="5dp"
+            android:background="#00000000"
+            android:onClick="onCLickButton"
+            android:src="@drawable/search"
             map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintHorizontal_weight="1"
             map:layout_constraintLeft_toRightOf="@id/Menu_dropdown"
             map:layout_constraintRight_toRightOf="parent"
-            map:layout_constraintHorizontal_weight="1"
-            android:src="@drawable/search"
-            android:background="#00000000"
-            android:onClick="onCLickButton"/>
+            map:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -58,48 +61,48 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        map:layout_constraintTop_toBottomOf="@id/top_row"
         map:layout_constraintBottom_toTopOf="@id/botom_row"
         map:layout_constraintLeft_toLeftOf="parent"
         map:layout_constraintRight_toRightOf="parent"
-        map:layout_constraintVertical_weight="10"/>
+        map:layout_constraintTop_toBottomOf="@id/top_row"
+        map:layout_constraintVertical_weight="10" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/botom_row"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        map:layout_constraintTop_toBottomOf="@id/map"
+        android:layout_margin="5dp"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintLeft_toLeftOf="parent"
         map:layout_constraintRight_toRightOf="parent"
-        map:layout_constraintVertical_weight="1"
-        android:layout_margin="3dp">
-
-        <ImageButton
-            android:id="@+id/Btn_findCurrentLoc"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            map:layout_constraintTop_toTopOf="parent"
-            map:layout_constraintBottom_toBottomOf="parent"
-            map:layout_constraintLeft_toLeftOf="parent"
-            map:layout_constraintRight_toLeftOf="@id/Btn_navigateToUni"
-            map:layout_constraintHorizontal_weight="1"
-            android:src="@drawable/my_location"
-            android:background="#00000000"
-            android:onClick="onCLickButton"/>
+        map:layout_constraintTop_toBottomOf="@id/map"
+        map:layout_constraintVertical_weight="1">
 
         <ImageButton
             android:id="@+id/Btn_navigateToUni"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            map:layout_constraintTop_toTopOf="parent"
-            map:layout_constraintBottom_toBottomOf="parent"
-            map:layout_constraintLeft_toRightOf="@id/Btn_findCurrentLoc"
-            map:layout_constraintRight_toRightOf="parent"
-            map:layout_constraintHorizontal_weight="1"
-            android:src="@drawable/navigate"
             android:background="#00000000"
-            android:onClick="onCLickButton"/>
+            android:onClick="onCLickButton"
+            android:src="@drawable/navigate"
+            map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintHorizontal_weight="1"
+            map:layout_constraintLeft_toLeftOf="parent"
+            map:layout_constraintRight_toLeftOf="@id/Btn_findCurrentLoc"
+            map:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/Btn_findCurrentLoc"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:onClick="onCLickButton"
+            android:src="@drawable/my_location"
+            map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintHorizontal_weight="1"
+            map:layout_constraintLeft_toRightOf="@id/Btn_navigateToUni"
+            map:layout_constraintRight_toRightOf="parent"
+            map:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
