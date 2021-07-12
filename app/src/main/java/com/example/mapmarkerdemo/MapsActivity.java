@@ -69,6 +69,7 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setMapToolbarEnabled(false);
         markerArrayList = new ArrayList<>();
 
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
@@ -86,8 +87,6 @@ public class MapsActivity extends FragmentActivity implements
             return;
         }
 
-        Toast.makeText(this,
-                "Opening in browser...", Toast.LENGTH_SHORT).show();
         OpenBrowserToUrl(uniInfo.getUrl());
 
     }
@@ -209,14 +208,20 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     private void findCurrentLocation() {
-        LatLng latLng = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions()
-                .position(latLng)
-                .title("Current Location")
-                .icon(DrawableToBitmapDescriptor(R.drawable.current_location));
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
-        mMap.addMarker(markerOptions);
+        if (currentLoc != null) {
+            LatLng latLng = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(latLng)
+                    .title("Current Location")
+                    .icon(DrawableToBitmapDescriptor(R.drawable.current_location));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+            mMap.addMarker(markerOptions);
+        }
+        else {
+            Toast.makeText(this,
+                    "Cannot find current location", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void AddUniInfo() {
@@ -386,7 +391,14 @@ public class MapsActivity extends FragmentActivity implements
         Uri webpage = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
         if (intent.resolveActivity(getPackageManager()) != null) {
+            Toast.makeText(this,
+                    "Opening in browser...", Toast.LENGTH_SHORT).show();
+
             startActivity(intent);
+        }
+        else {
+            Toast.makeText(this,
+                    "Unable to find browser", Toast.LENGTH_SHORT).show();
         }
     }
 
