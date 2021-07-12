@@ -1,4 +1,4 @@
-package com.example.mapmarkerdemo;
+package com.example.mapmarkerdemo.MapInfo;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -7,12 +7,14 @@ public class UniInfo {
     String title;
     String info;
     String url;
+    int logo;
 
-    public UniInfo(double lat, double lon, String title, String info, String url) {
+    public UniInfo(double lat, double lon, String title, String info, String url, int logo) {
         coord = new LatLng(lat, lon);
         this.title = title;
         this.info = info;
         this.url = url;
+        this.logo = logo;
     }
 
     public LatLng getCoord() {
@@ -29,5 +31,9 @@ public class UniInfo {
 
     public String getUrl() {
         return url;
+    }
+
+    public int getLogo() {
+        return logo;
     }
 }
