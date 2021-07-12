@@ -130,6 +130,10 @@ public class MapsActivity extends FragmentActivity implements
             }
         }
         try {
+            if (latLng == null){
+                Toast.makeText(this,"Pick the university first!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Uri uri = Uri.parse("https://www.google.co.in/maps/dir/"
                     + currentLoc.getLatitude() + "," + currentLoc.getLongitude() + "/" + latLng.latitude + "," + latLng.longitude);
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
